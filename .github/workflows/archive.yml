@@ -57,7 +57,7 @@ jobs:
       # Archive MumbleKit (Mac)
       - name: Build MumbleKit (Mac)
         run: |
-          set -o pipefail && xcodebuild archive -scheme MumbleKit-${{ github.event.inputs.output_type }} \
+          set -o pipefail && xcodebuild archive -scheme MumbleKit-static \
           -configuration ${{ github.event.inputs.build_type }} \
           -project MumbleKit.xcodeproj \
           -sdk macosx  \
@@ -65,6 +65,7 @@ jobs:
           -archivePath "${PWD}/__build__/archives/MumbleKit-macOS" \
           SKIP_INSTALL=NO \
           BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+          MACH_O_TYPE=$([ "${{ github.event.inputs.output_type }}" == "static" ] && echo "staticlib" || echo "mh_dylib") \
           CONFIGURATION_BUILD_DIR=${PWD}/__build__/mac | xcpretty
           
       # - name: Print xcarchive macOS structure
@@ -76,7 +77,7 @@ jobs:
       # Archive MumbleKit (iOS)
       - name: Archive MumbleKit (iOS) 
         run: |
-          set -o pipefail && xcodebuild archive -scheme MumbleKit-${{ github.event.inputs.output_type }} \
+          set -o pipefail && xcodebuild archive -scheme MumbleKit-static \
           -configuration ${{ github.event.inputs.build_type }} \
           -project MumbleKit.xcodeproj \
           -sdk iphoneos \
@@ -84,6 +85,7 @@ jobs:
           -archivePath ${PWD}/__build__/archives/MumbleKit-iOS \
           SKIP_INSTALL=NO \
           BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+          MACH_O_TYPE=$([ "${{ github.event.inputs.output_type }}" == "static" ] && echo "staticlib" || echo "mh_dylib") \
           CONFIGURATION_BUILD_DIR=${PWD}/__build__/ios | xcpretty
 
       # - name: Print xcarchive iOS structure
@@ -94,7 +96,7 @@ jobs:
       # Archive MumbleKit (iOS Simulator)
       - name: Archive MumbleKit (iOS Simulator) 
         run: |
-          set -o pipefail && xcodebuild archive -scheme MumbleKit-${{ github.event.inputs.output_type }} \
+          set -o pipefail && xcodebuild archive -scheme MumbleKit-static \
           -configuration ${{ github.event.inputs.build_type }} \
           -project MumbleKit.xcodeproj \
           -sdk iphonesimulator \
@@ -102,6 +104,7 @@ jobs:
           -archivePath ${PWD}/__build__/archives/MumbleKit-iOS_Simulator \
           SKIP_INSTALL=NO \
           BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+          MACH_O_TYPE=$([ "${{ github.event.inputs.output_type }}" == "static" ] && echo "staticlib" || echo "mh_dylib") \
           CONFIGURATION_BUILD_DIR=${PWD}/__build__/ios_sim | xcpretty
           
       # - name: Print directory sim structure after build
